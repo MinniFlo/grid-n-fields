@@ -7,7 +7,7 @@ pub struct Field{
     y_pos: i32,
     x_pos: i32,
     #[pyo3(get, set)]
-    number: i8,
+    number: u8,
     #[pyo3(get, set)]
     is_mine: bool,
     #[pyo3(get)]
@@ -19,7 +19,7 @@ pub struct Field{
     #[pyo3(get, set)]
     current_symbol: char,
     #[pyo3(get, set)]
-    current_color_id: i32
+    current_color_id: u8
 }
 
 #[pymethods]
@@ -51,7 +51,14 @@ impl Field {
     #[setter]
     pub fn set_is_open(&mut self, is_open: bool) -> PyResult<()> {
         self.is_open = is_open;
-        //todo
+        if is_open {
+            self.current_color_id = self.number;
+            if self.number == 0 {
+                self.current_symbol = ' ';
+            } else {
+                self.current_symbol = self.number as char;
+            }
+        }
         Ok(())
     }
 
