@@ -6,7 +6,6 @@ class TestField(unittest.TestCase):
 
     def setUp(self):
         self.field1 = Field(2, 4)
-        self.field2 = Field(6, 3)
 
     def test_init(self):
         self.assertEqual(self.field1.coordinates, (2, 4))
