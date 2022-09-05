@@ -49,8 +49,8 @@ class TestField(unittest.TestCase):
         self.field1.is_open = False
         self.field1.number = 0
         self.field1.is_open = True
-        self.assertTrue(self.field2.is_open)
-        self.assertEqual(self.field2.current_symbol, ' ')
+        self.assertTrue(self.field1.is_open)
+        self.assertEqual(self.field1.current_symbol, ' ')
 
     def test_set_is_flag(self):
         self.field1.is_flag = True 

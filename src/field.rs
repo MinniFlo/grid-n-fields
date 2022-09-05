@@ -67,7 +67,11 @@ impl Field {
             if self.number == 0 {
                 self.current_symbol = ' ';
             } else {
-                self.current_symbol = self.number as char;
+                let char_option = self.number.to_string().chars().nth(0);
+                match char_option {
+                    Some(value) => self.current_symbol = value,
+                    None => return Err(PyValueError::new_err("number of Field is empty"))
+                }
             }
         }
         Ok(())
