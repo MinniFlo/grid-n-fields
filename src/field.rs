@@ -93,8 +93,17 @@ impl Field {
 
     #[setter]
     pub fn set_is_relevant(&mut self, is_relevant: bool) -> PyResult<()> {
+        if self.is_flag {
+            return Ok(())
+        }
         self.is_relevant = is_relevant;
-        //todo
+        if is_relevant && !self.is_open {
+            self.current_color_id = 0;
+        } else if is_relevant && self.is_open {
+            self.current_color_id = self.number;
+        } else {
+            self.current_color_id = 12;
+        }
         Ok(())
     }
 }
