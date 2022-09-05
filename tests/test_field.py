@@ -25,6 +25,8 @@ class TestField(unittest.TestCase):
     def test_set_number(self):
         self.field1.number = 5
         self.assertEqual(self.field1.number, 5)
+        with self.assertRaises(ValueError):
+            self.field1.number = 10
 
     def test_set_is_mine(self):
         self.field1.is_mine = True

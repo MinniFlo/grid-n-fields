@@ -1,12 +1,13 @@
 
 use pyo3::prelude::*;
+use pyo3::exceptions::PyValueError;
 
 
 #[pyclass]
 pub struct Field{
     y_pos: i32,
     x_pos: i32,
-    #[pyo3(get, set)]
+    #[pyo3(get)]
     number: u8,
     #[pyo3(get, set)]
     is_mine: bool,
@@ -46,6 +47,16 @@ impl Field {
     #[getter]
     pub fn render_coordinates(&self) -> PyResult<(i32, i32)> {
         Ok((self.y_pos, self.x_pos * 2))
+    }
+
+    #[setter]
+    pub fn set_number(&mut self, number: u8) -> PyResult<()> {
+        if number < 10 {
+            self.number = number;
+            Ok(())
+        } else {
+            Err(PyValueError::new_err("number needs to be greater/equal than 0 and smaller than 10!"))
+        }
     }
 
     #[setter]
