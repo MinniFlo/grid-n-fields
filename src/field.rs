@@ -80,7 +80,14 @@ impl Field {
     #[setter]
     pub fn set_is_flag(&mut self, is_flag: bool) -> PyResult<()> {
         self.is_flag = is_flag;
-        //todo
+        if is_flag {
+            self.current_symbol = '?';
+            self.current_color_id = 11;
+            self.is_relevant = true;
+        } else {
+            self.current_symbol = '*';
+            self.current_color_id = 0;
+        }
         Ok(())
     }
 
