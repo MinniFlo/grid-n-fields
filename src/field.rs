@@ -4,6 +4,7 @@ use pyo3::exceptions::PyValueError;
 
 
 #[pyclass]
+#[derive(Clone)]
 pub struct Field{
     y_pos: i32,
     x_pos: i32,
