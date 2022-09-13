@@ -132,19 +132,48 @@ class TestGrid(unittest.TestCase):
         self.assertFalse(self.grid.is_relevant_open_field((5, 3)))
 
     def test_set_mine_data(self):
-        self.grid.set_mine_data((2, 2))
-        mine_counter = 0
-        start_fields = {(2+1, 2+1),(2+1, 2), (2+1, 2-1), (2, 2+1), (2, 2), (2, 2-1), (2-1, 2+1), (2-1, 2), (2-1, 2-1)}
-        possitions = set()
+        y, x = (2, 2)
+        self.grid.set_mine_data((y, x))
+
         for row in self.grid.grid:
+            print("\n")
             for field in row:
+                coordinates = field.coordinates
                 if field.is_mine:
-                    mine_counter += 1
-                    possitions.add(field.coordinates)
+                    print("* ", end=' ')
+                else:
+                    if coordinates in self.grid.boarder:
+                        print("# ", end=' ')
+                    elif field.number == 0:
+                         print("  ", end=' ')
+                    else: 
+                         print("{} ".format(field.number), end=' ')
+
+        mine_counter = 0
+        start_fields = {(y+1, x+1),(y+1, x), (y+1, x-1), (y, x+1), (y, x), (y, x-1), (y-1, x+1), (y-1, x), (y-1, x-1)}
+        possitions = set()
+        for y in range(self.grid.y_size):
+            for x in range(self.grid.x_size):
+                with FieldContext(self.grid, (y, x)) as field:
+                    coordinates = field.coordinates
+                    if field.is_mine:
+                        mine_counter += 1
+                        possitions.add(coordinates)
+                    else: 
+                        if coordinates in self.grid.boarder:
+                            continue
+                        neighbors = self.grid.neighbors_of_coordinates(coordinates)
+                        number = 0
+                        for tupl in neighbors:
+                            with FieldContext(self.grid, tupl) as f:
+                                if f.is_mine:
+                                    number += 1
+                        self.assertEqual(field.number, number)
+    
         self.assertEqual(mine_counter, self.grid.mine_count)
         for i in start_fields:
-            self.assertNotIn(i, possitions)
-            self.assertNotIn(i, self.grid.boarder)
+            self.assertFalse(i in possitions)
+            self.assertFalse(i in self.grid.boarder)
     
 
 

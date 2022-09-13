@@ -41,12 +41,12 @@ impl Field {
         }
     }
     #[getter]
-    pub fn get_coordinates(&self) -> PyResult<(usize, usize)> {
+    pub fn coordinates(&self) -> PyResult<(usize, usize)> {
         Ok((self.y_pos, self.x_pos))
     }
 
     #[getter]
-    pub fn get_render_coordinates(&self) -> PyResult<(usize, usize)> {
+    pub fn render_coordinates(&self) -> PyResult<(usize, usize)> {
         Ok((self.y_pos, self.x_pos * 2))
     }
 
@@ -110,6 +110,10 @@ impl Field {
 }
 
 impl Field {
+    pub fn get_coordinates(&self) -> (usize, usize) {
+        (self.y_pos, self.x_pos)
+    }
+
     pub fn get_is_open(&self) -> bool {
         self.is_open
     }

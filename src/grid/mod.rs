@@ -196,6 +196,11 @@ impl Grid {
 
     pub fn count_mines(&mut self, coordinates: &(usize, usize)) -> u8 {
         let mut number: u8 = 0;
+        let field = self.get_field_with_coordinates(coordinates);
+        if field.get_is_mine() {
+            number = 9;
+            return number;
+        }
         let neighbors = self.neighbors_of_coordinates(*coordinates);
         for tuple in neighbors {
             let field = self.get_field_with_coordinates(&tuple);
