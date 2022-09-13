@@ -59,9 +59,6 @@ class TestGrid(unittest.TestCase):
 
     def test_save_and_reset_gird(self):
         self.grid.update_last_grid()
-
-    def test_get_field_with_coordinates_and_update(self):
-        pass
     
     def test_active_field(self):
         coordinates = (4, 5)
@@ -77,9 +74,12 @@ class TestGrid(unittest.TestCase):
         coordinates = (6, 5)
         self.assertFalse(self.grid.grid[6][5].is_open)
         with FieldContext(self.grid, coordinates) as field:
-            field.is_open = True
+            field.is_flag = True
+        self.assertTrue(self.grid.grid[6][5].is_flag)
+        self.assertEqual(self.grid.grid[6][5].symbol, '?')
 
-        self.assertTrue(self.grid.grid[6][5].is_open)
+    def test_get_field_with_coordinates_and_update(self):
+        pass
         
 
 

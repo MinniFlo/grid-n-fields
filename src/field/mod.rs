@@ -19,9 +19,9 @@ pub struct Field{
     #[pyo3(get)]
     is_relevant: bool,
     #[pyo3(get)]
-    current_symbol: char,
+    symbol: char,
     #[pyo3(get)]
-    current_color_id: u8
+    color_id: u8
 }
 
 #[pymethods]
@@ -36,8 +36,8 @@ impl Field {
             is_open: false,
             is_flag: false,
             is_relevant: false,
-            current_symbol: '*',
-            current_color_id: 12
+            symbol: '*',
+            color_id: 12
         }
     }
     #[getter]
@@ -64,13 +64,13 @@ impl Field {
     pub fn set_is_open(&mut self, is_open: bool) -> PyResult<()> {
         self.is_open = is_open;
         if is_open {
-            self.current_color_id = self.number;
+            self.color_id = self.number;
             if self.number == 0 {
-                self.current_symbol = ' ';
+                self.symbol = ' ';
             } else {
                 let char_option = self.number.to_string().chars().nth(0);
                 match char_option {
-                    Some(value) => self.current_symbol = value,
+                    Some(value) => self.symbol = value,
                     None => return Err(PyValueError::new_err("number of Field is empty"))
                 }
             }
@@ -82,12 +82,12 @@ impl Field {
     pub fn set_is_flag(&mut self, is_flag: bool) -> PyResult<()> {
         self.is_flag = is_flag;
         if is_flag {
-            self.current_symbol = '?';
-            self.current_color_id = 11;
+            self.symbol = '?';
+            self.color_id = 11;
             self.is_relevant = true;
         } else {
-            self.current_symbol = '*';
-            self.current_color_id = 0;
+            self.symbol = '*';
+            self.color_id = 0;
         }
         Ok(())
     }
@@ -99,11 +99,11 @@ impl Field {
         }
         self.is_relevant = is_relevant;
         if is_relevant && !self.is_open {
-            self.current_color_id = 0;
+            self.color_id = 0;
         } else if is_relevant && self.is_open {
-            self.current_color_id = self.number;
+            self.color_id = self.number;
         } else {
-            self.current_color_id = 12;
+            self.color_id = 12;
         }
         Ok(())
     }
