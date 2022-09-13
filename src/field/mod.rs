@@ -108,3 +108,13 @@ impl Field {
         Ok(())
     }
 }
+
+impl Field {
+    pub fn get_is_open(&self) -> bool {
+        self.is_open
+    }
+
+    pub fn get_is_flag(&self) -> bool {
+        self.is_flag
+    }
+}

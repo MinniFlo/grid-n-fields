@@ -1,4 +1,5 @@
 
+from pickle import TRUE
 import unittest
 from grid_n_fields import Grid
 
@@ -50,10 +51,10 @@ class TestGrid(unittest.TestCase):
         self.assertTrue((11, 11) in self.grid.boarder)
 
     def test_neighbors_of_coordinates(self):
-        neighbors = self.grid.neighbors_of_coordinates(1, 1)
+        neighbors = self.grid.neighbors_of_coordinates((1, 1))
         test_set = {(1, 2), (2, 1), (2, 2)}
         self.assertSetEqual(neighbors, test_set)
-        neighbors = self.grid.neighbors_of_coordinates(3, 4)
+        neighbors = self.grid.neighbors_of_coordinates((3, 4))
         test_set = {(2, 3), (2, 4), (2, 5), (3, 3), (3, 5), (4, 3), (4, 4), (4, 5)}
         self.assertSetEqual(neighbors, test_set)
 
@@ -84,18 +85,53 @@ class TestGrid(unittest.TestCase):
         with FieldContext(self.grid, coordinates) as field:
             field.is_flag = True
         self.assertTrue(self.grid.grid[6][5].is_flag)
-        self.assertEqual(self.grid.grid[6][5].symbol, '?')
         self.grid.reset_to_last_grid()
         self.assertFalse(self.grid.grid[6][5].is_flag)
-        self.assertEqual(self.grid.grid[6][5].symbol, '*')
-        
+
+    def test_is_relevant_field(self):
+        with FieldContext(self.grid, (4, 4)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (4, 3)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (4, 2)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (5, 4)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (5, 3)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (5, 2)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (3, 4)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (3, 3)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (3, 2)) as field:
+            field.is_open = True
+        with FieldContext(self.grid, (6, 2)) as field:
+            field.is_flag = True
+        with FieldContext(self.grid, (6, 3)) as field:
+            field.is_flag = True
+        with FieldContext(self.grid, (6, 4)) as field:
+            field.is_flag = True
+
+        #  1 2 3 4 5 6 
+        #  2 * * * * * 
+        #  3 . . . * * 
+        #  4 . . . * * 
+        #  5 . . . * * 
+        #  6 ? ? ? * * 
+
+        self.assertTrue(self.grid.is_relevant_closed_field((5, 5)))
+        self.assertTrue(self.grid.is_relevant_closed_field((4, 5)))
+        self.assertTrue(self.grid.is_relevant_closed_field((6, 5)))
+        self.assertFalse(self.grid.is_relevant_closed_field((4, 6)))
+
+        self.assertTrue(self.grid.is_relevant_open_field((4, 4)))
+        self.assertTrue(self.grid.is_relevant_open_field((5, 4)))
+        self.assertFalse(self.grid.is_relevant_open_field((4, 3)))
+        self.assertFalse(self.grid.is_relevant_open_field((5, 3)))
 
 
-    # wrapper functions
-    # def test_set_is_open(self):
-    #     self.assertFalse(self.grid.grid[2][3].is_open)
-    #     self.grid.set_is_open((2,3), True)
-    #     self.assertTrue(self.grid.grid[2][3].is_open)
 
 
 
