@@ -4,10 +4,10 @@ use pyo3::exceptions::PyValueError;
 
 
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub struct Field{
-    y_pos: i32,
-    x_pos: i32,
+    y_pos: usize,
+    x_pos: usize,
     #[pyo3(get)]
     number: u8,
     #[pyo3(get, set)]
@@ -18,16 +18,16 @@ pub struct Field{
     is_flag: bool,
     #[pyo3(get)]
     is_relevant: bool,
-    #[pyo3(get, set)]
+    #[pyo3(get)]
     current_symbol: char,
-    #[pyo3(get, set)]
+    #[pyo3(get)]
     current_color_id: u8
 }
 
 #[pymethods]
 impl Field {
     #[new]
-    pub fn new(y_pos: i32, x_pos: i32) -> Self {
+    pub fn new(y_pos: usize, x_pos: usize) -> Self {
         Field{
             y_pos: y_pos,
             x_pos: x_pos,
@@ -41,12 +41,12 @@ impl Field {
         }
     }
     #[getter]
-    pub fn coordinates(&self) -> PyResult<(i32, i32)> {
+    pub fn get_coordinates(&self) -> PyResult<(usize, usize)> {
         Ok((self.y_pos, self.x_pos))
     }
 
     #[getter]
-    pub fn render_coordinates(&self) -> PyResult<(i32, i32)> {
+    pub fn get_render_coordinates(&self) -> PyResult<(usize, usize)> {
         Ok((self.y_pos, self.x_pos * 2))
     }
 

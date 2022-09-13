@@ -19,7 +19,6 @@ class TestField(unittest.TestCase):
 
     def test_render_coordinates(self):
         self.assertEqual(self.field1.render_coordinates, (2, 8))
-        self.assertEqual(self.field2.render_coordinates, (6, 6))
 
     def test_set_number(self):
         self.field1.number = 5
@@ -30,15 +29,6 @@ class TestField(unittest.TestCase):
     def test_set_is_mine(self):
         self.field1.is_mine = True
         self.assertTrue(self.field1.is_mine)
-
-    def test_set_current_symbol(self):
-        self.field1.current_symbol = '1'
-        self.assertEqual(self.field1.current_symbol, '1')
-
-
-    def test_set_current_color_id(self):
-        self.field1.current_color_id = 4
-        self.assertEqual(self.field1.current_color_id, 4)
 
     def test_set_is_open(self):
         self.field1.number = 6
