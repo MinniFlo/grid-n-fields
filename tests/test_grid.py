@@ -131,6 +131,21 @@ class TestGrid(unittest.TestCase):
         self.assertFalse(self.grid.is_relevant_open_field((4, 3)))
         self.assertFalse(self.grid.is_relevant_open_field((5, 3)))
 
+    def test_set_mine_data(self):
+        self.grid.set_mine_data((2, 2))
+        mine_counter = 0
+        start_fields = {(2+1, 2+1),(2+1, 2), (2+1, 2-1), (2, 2+1), (2, 2), (2, 2-1), (2-1, 2+1), (2-1, 2), (2-1, 2-1)}
+        possitions = set()
+        for row in self.grid.grid:
+            for field in row:
+                if field.is_mine:
+                    mine_counter += 1
+                    possitions.add(field.coordinates)
+        self.assertEqual(mine_counter, self.grid.mine_count)
+        for i in start_fields:
+            self.assertNotIn(i, possitions)
+            self.assertNotIn(i, self.grid.boarder)
+    
 
 
 

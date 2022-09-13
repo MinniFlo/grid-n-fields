@@ -14,8 +14,8 @@ class TestField(unittest.TestCase):
         self.assertFalse(self.field1.is_open) 
         self.assertFalse(self.field1.is_flag) 
         self.assertFalse(self.field1.is_relevant)
-        self.assertEqual(self.field1.current_symbol, '*')
-        self.assertEqual(self.field1.current_color_id, 12)
+        self.assertEqual(self.field1.symbol, '*')
+        self.assertEqual(self.field1.color_id, 12)
 
     def test_render_coordinates(self):
         self.assertEqual(self.field1.render_coordinates, (2, 8))
@@ -34,23 +34,23 @@ class TestField(unittest.TestCase):
         self.field1.number = 6
         self.field1.is_open = True
         self.assertTrue(self.field1.is_open)
-        self.assertEqual(self.field1.current_symbol, '6')
+        self.assertEqual(self.field1.symbol, '6')
         self.field1.is_open = False
         self.field1.number = 0
         self.field1.is_open = True
         self.assertTrue(self.field1.is_open)
-        self.assertEqual(self.field1.current_symbol, ' ')
+        self.assertEqual(self.field1.symbol, ' ')
 
     def test_set_is_flag(self):
         self.field1.is_flag = True 
         self.assertTrue(self.field1.is_flag)
-        self.assertEqual(self.field1.current_symbol, '?')
-        self.assertEqual(self.field1.current_color_id, 11)
+        self.assertEqual(self.field1.symbol, '?')
+        self.assertEqual(self.field1.color_id, 11)
         self.assertTrue(self.field1.is_relevant)
         self.field1.is_flag = False
         self.assertFalse(self.field1.is_flag)
-        self.assertEqual(self.field1.current_symbol, '*')
-        self.assertEqual(self.field1.current_color_id, 0)
+        self.assertEqual(self.field1.symbol, '*')
+        self.assertEqual(self.field1.color_id, 0)
         self.assertTrue(self.field1.is_relevant)        
 
     def test_set_is_relevant(self):
@@ -58,15 +58,15 @@ class TestField(unittest.TestCase):
         self.field1.number = 3
         self.field1.is_relevant = True
         self.assertTrue(self.field1.is_relevant)
-        self.assertEqual(self.field1.current_color_id, 3)
+        self.assertEqual(self.field1.color_id, 3)
         self.field1.is_relevant = False
-        self.assertEqual(self.field1.current_color_id, 12)
+        self.assertEqual(self.field1.color_id, 12)
         self.field1.is_open = False
         self.field1.is_relevant = True
         self.assertTrue(self.field1.is_relevant)
-        self.assertEqual(self.field1.current_color_id, 0)
+        self.assertEqual(self.field1.color_id, 0)
         self.field1.is_relevant = False
-        self.assertEqual(self.field1.current_color_id, 12)
+        self.assertEqual(self.field1.color_id, 12)
 
 
 if __name__ == '__main__':

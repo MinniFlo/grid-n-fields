@@ -1,5 +1,6 @@
 
 use pyo3::prelude::*;
+use rand::prelude::*;
 use std::collections::HashSet;
 use crate::field::Field;
 
@@ -44,6 +45,11 @@ impl Grid {
         }
     }
 
+    pub fn set_mine_data(&mut self, start_coordinates: (usize, usize)) {
+        self.set_mines(start_coordinates);
+        self.set_numbers();
+    }
+
     pub fn neighbors_of_coordinates(&self, coordinates: (usize, usize)) -> HashSet<(usize, usize)> {
         let (y, x) = coordinates;
         let neighbors = 
@@ -78,7 +84,7 @@ impl Grid {
     pub fn is_relevant_closed_field(&mut self, coordinates: (usize, usize)) -> bool {
         let neighbors = self.neighbors_of_coordinates(coordinates);
         for tuple in neighbors {
-            let field = self.get_field_with_coordinates(tuple);
+            let field = self.get_field_with_coordinates(&tuple);
             if field.get_is_open() {
                 return true;
             }
@@ -89,7 +95,7 @@ impl Grid {
     pub fn is_relevant_open_field(&mut self, coordinates: (usize, usize)) -> bool {
         let neighbors = self.neighbors_of_coordinates(coordinates);
         for tuple in neighbors {
-            let field = self.get_field_with_coordinates(tuple);
+            let field = self.get_field_with_coordinates(&tuple);
             if !field.get_is_open() && !field.get_is_flag() {
                 return true;
             }
@@ -123,7 +129,66 @@ impl Grid {
         boarder
     }
 
-    pub fn get_field_with_coordinates(&mut self, coordinates: (usize, usize)) -> &mut Field {
+    pub fn get_field_with_coordinates(&mut self, coordinates: &(usize, usize)) -> &mut Field {
         &mut self.grid[coordinates.0][coordinates.1]
+    }
+
+    pub fn set_mines(&mut self, coordinates: (usize, usize)) {
+        let possible_mine_coordinates = self.get_all_possible_mine_field_coordinates(coordinates);
+        let mine_coordinates = self.generate_mine_positions(possible_mine_coordinates);
+        self.set_mine_positions_in_grid(&mine_coordinates)
+    }
+
+    pub fn get_free_stating_fields(coordinates: (usize, usize)) -> HashSet<(usize, usize)> {
+        let (y, x) = coordinates;
+        HashSet::from([(y-1, x-1), (y-1, x), (y-1, x+1), (y, x-1), (y, x), (y, x+1), (y+1, x-1), (y+1, x), (y+1, x+1)])
+    }
+
+    pub fn get_all_inner_field_coordinates(&self) -> Vec<(usize, usize)> {
+        let mut all_coordinates = Vec::new();
+        for y in 1..self.y_size-1 {
+            for x in 1..self.x_size-1 {
+                all_coordinates.push((y, x))
+            }
+        }
+        all_coordinates
+    }
+
+    pub fn get_all_possible_mine_field_coordinates(&self, coordinates: (usize, usize)) -> Vec<(usize, usize)> {
+        let inner_coordinates = self.get_all_inner_field_coordinates();
+        let start_fields = Self::get_free_stating_fields(coordinates);
+        inner_coordinates
+            .into_iter()
+            .filter(|tuple| !start_fields.contains(tuple))
+            .collect()
+    }
+
+    pub fn generate_mine_positions(&self, mut possible_mine_coordinates: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
+        let mut mine_positions = Vec::new();
+        let possible_mine_count = possible_mine_coordinates.len();
+        let mut rng = thread_rng();
+        for n in 0..self.mine_count {
+            let random_index = rng.gen_range(0..possible_mine_count-n);
+            let mine_coordinate = possible_mine_coordinates.remove(random_index);
+            mine_positions.push(mine_coordinate);
+        }
+
+        mine_positions
+    }
+
+    pub fn set_mine_positions_in_grid(&mut self, mine_coordinates: &Vec<(usize, usize)>) {
+        for tuple in mine_coordinates {
+            let field = self.get_field_with_coordinates(tuple);
+            field.set_is_mine(true);
+        }
+    }
+
+    pub fn set_numbers(&mut self) {
+    }
+
+    pub fn count_mines(&mut self, coordinates: &(usize, usize)) -> u8 {
+        let mut number: u8 = 0;
+
+        number
     }
 }

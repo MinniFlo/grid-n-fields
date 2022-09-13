@@ -51,7 +51,7 @@ impl Field {
     }
 
     #[setter]
-    pub fn set_number(&mut self, number: u8) -> PyResult<()> {
+    pub fn number(&mut self, number: u8) -> PyResult<()> {
         if number < 10 {
             self.number = number;
             Ok(())
@@ -116,5 +116,17 @@ impl Field {
 
     pub fn get_is_flag(&self) -> bool {
         self.is_flag
+    }
+
+    pub fn get_is_mine(&self) -> bool {
+        self.is_mine
+    }
+
+    pub fn set_is_mine(&mut self, is_mine: bool) {
+        self.is_mine = is_mine;
+    }
+
+    pub fn set_number(&mut self, number: u8) {
+        self.number = number;
     }
 }
