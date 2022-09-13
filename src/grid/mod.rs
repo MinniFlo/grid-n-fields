@@ -184,10 +184,25 @@ impl Grid {
     }
 
     pub fn set_numbers(&mut self) {
+        for y in 1..self.y_size-1 {
+            for x in 1..self.x_size-1 {
+                let coordinates = (y, x);
+                let number = self.count_mines(&coordinates);
+                let field = self.get_field_with_coordinates(&coordinates);
+                field.set_number(number);
+            }
+        }
     }
 
     pub fn count_mines(&mut self, coordinates: &(usize, usize)) -> u8 {
         let mut number: u8 = 0;
+        let neighbors = self.neighbors_of_coordinates(*coordinates);
+        for tuple in neighbors {
+            let field = self.get_field_with_coordinates(&tuple);
+            if field.get_is_mine() {
+                number += 1;
+            }
+        }
 
         number
     }
