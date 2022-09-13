@@ -79,7 +79,15 @@ class TestGrid(unittest.TestCase):
         self.assertEqual(self.grid.grid[6][5].symbol, '?')
 
     def test_get_field_with_coordinates_and_update(self):
-        pass
+        self.grid.update_last_grid()
+        coordinates = (6, 5)
+        with FieldContext(self.grid, coordinates) as field:
+            field.is_flag = True
+        self.assertTrue(self.grid.grid[6][5].is_flag)
+        self.assertEqual(self.grid.grid[6][5].symbol, '?')
+        self.grid.reset_to_last_grid()
+        self.assertFalse(self.grid.grid[6][5].is_flag)
+        self.assertEqual(self.grid.grid[6][5].symbol, '*')
         
 
 
