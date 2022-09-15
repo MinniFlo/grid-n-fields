@@ -7,7 +7,7 @@ class FieldContext:
         self.file = None
 
     def __enter__(self):
-        self.field = self.grid.set_context_field(self.coordinates)
+        self.field = self.grid.get_field(self.coordinates)
         return self.field
 
     def __exit__(self, exc_type, exc_value, exc_traceback):

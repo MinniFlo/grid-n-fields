@@ -1,4 +1,3 @@
-
 import unittest
 from grid_n_fields import FieldContext, Grid
 
@@ -44,16 +43,6 @@ class TestGrid(unittest.TestCase):
 
     def test_save_and_reset_gird(self):
         self.grid.update_last_grid()
-    
-    def test_active_field(self):
-        coordinates = (4, 5)
-        the_field = self.grid.set_context_field(coordinates)
-        self.assertEqual(the_field.coordinates, coordinates)
-        self.assertFalse(the_field.is_open)
-        self.assertFalse(self.grid.grid[4][5].is_open)
-        the_field.is_open = True
-        self.grid.update_context_field_in_grid(coordinates, the_field)
-        self.assertTrue(self.grid.grid[4][5].is_open)
 
     def test_field_context(self):
         coordinates = (6, 5)

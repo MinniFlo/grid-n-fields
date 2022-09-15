@@ -62,7 +62,7 @@ impl Grid {
     }
 
     // to access Fields in context manager
-    pub fn set_context_field(&mut self, coordinates: (usize, usize)) -> Field {
+    pub fn get_field(&self, coordinates: (usize, usize)) -> Field {
         self.grid[coordinates.0][coordinates.1]
     }
 

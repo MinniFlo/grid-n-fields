@@ -10,7 +10,7 @@ pub struct Field{
     x_pos: usize,
     #[pyo3(get)]
     number: u8,
-    #[pyo3(get, set)]
+    #[pyo3(get)]
     is_mine: bool,
     #[pyo3(get)]
     is_open: bool,
@@ -48,16 +48,6 @@ impl Field {
     #[getter]
     pub fn render_coordinates(&self) -> PyResult<(usize, usize)> {
         Ok((self.y_pos, self.x_pos * 2))
-    }
-
-    #[setter]
-    pub fn number(&mut self, number: u8) -> PyResult<()> {
-        if number < 10 {
-            self.number = number;
-            Ok(())
-        } else {
-            Err(PyValueError::new_err("number needs to be greater/equal than 0 and smaller than 10!"))
-        }
     }
 
     #[setter]

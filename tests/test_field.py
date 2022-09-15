@@ -20,23 +20,11 @@ class TestField(unittest.TestCase):
     def test_render_coordinates(self):
         self.assertEqual(self.field1.render_coordinates, (2, 8))
 
-    def test_set_number(self):
-        self.field1.number = 5
-        self.assertEqual(self.field1.number, 5)
-        with self.assertRaises(ValueError):
-            self.field1.number = 10
-
     def test_set_is_mine(self):
         self.field1.is_mine = True
         self.assertTrue(self.field1.is_mine)
 
     def test_set_is_open(self):
-        self.field1.number = 6
-        self.field1.is_open = True
-        self.assertTrue(self.field1.is_open)
-        self.assertEqual(self.field1.symbol, '6')
-        self.field1.is_open = False
-        self.field1.number = 0
         self.field1.is_open = True
         self.assertTrue(self.field1.is_open)
         self.assertEqual(self.field1.symbol, ' ')
@@ -55,10 +43,9 @@ class TestField(unittest.TestCase):
 
     def test_set_is_relevant(self):
         self.field1.is_open = True
-        self.field1.number = 3
         self.field1.is_relevant = True
         self.assertTrue(self.field1.is_relevant)
-        self.assertEqual(self.field1.color_id, 3)
+        self.assertEqual(self.field1.color_id, 0)
         self.field1.is_relevant = False
         self.assertEqual(self.field1.color_id, 12)
         self.field1.is_open = False
