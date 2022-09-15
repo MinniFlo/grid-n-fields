@@ -147,9 +147,21 @@ class TestGrid(unittest.TestCase):
         for i in start_fields:
             self.assertFalse(i in possitions)
             self.assertFalse(i in self.grid.boarder)
-    
 
-
+    def test_iter(self):
+        grid_iter = iter(self.grid)
+        inner_fields = []
+        for field in grid_iter:
+            self.assertFalse(field.coordinates in self.grid.boarder)
+            inner_fields.append(field)
+        self.assertEqual(len(inner_fields), self.grid.field_count)
+        # iterreset
+        another_inner_fields = []
+        grid_2nd_iter = iter(self.grid)
+        for field in grid_2nd_iter:
+            self.assertFalse(field.coordinates in self.grid.boarder)
+            another_inner_fields.append(field)
+        self.assertEqual(len(another_inner_fields), self.grid.field_count)
 
 
 if __name__ == '__main__':

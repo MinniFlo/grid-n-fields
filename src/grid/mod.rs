@@ -22,6 +22,9 @@ pub struct Grid{
     mine_count: usize,
     #[pyo3(get)]
     last_grid_state: Vec<Vec<Field>>,
+    iter_index: usize,
+    y_iter_pos: usize,
+    max_iter: usize
 }
 
 #[pymethods]
@@ -33,6 +36,7 @@ impl Grid {
         let boarder = Self::populate_boarder(y_size, x_size);
         let field_count = y_size * x_size - boarder.len() as usize;
         let mine_count = ((field_count - 9) as f32 * percentage_of_mines) as usize;
+        let max_iter: usize = (y_size * x_size) - (x_size + 1);
 
         Grid { 
             y_size: y_size, 
@@ -42,6 +46,9 @@ impl Grid {
             field_count: field_count, 
             mine_count: mine_count, 
             last_grid_state: last_grid_state,
+            iter_index: x_size + 1,
+            y_iter_pos: 1,
+            max_iter: max_iter
         }
     }
 
@@ -101,6 +108,28 @@ impl Grid {
             }
         }
         false
+    }
+
+    fn __iter__(slf: PyRef<'_, Self>) -> PyRef<'_, Self> {
+        slf
+    }
+
+    fn __next__(mut slf: PyRefMut<'_, Self>) -> Option<Field> {
+        if slf.iter_index < slf.max_iter{
+            if slf.iter_index % slf.x_size == slf.x_size -1{
+                slf.iter_index += 1;
+                slf.y_iter_pos = slf.iter_index / slf.x_size as usize;
+                slf.iter_index += 1;
+            }
+            let x = slf.iter_index % slf.x_size;
+            slf.iter_index += 1;
+            let field = slf.grid[slf.y_iter_pos][x];
+            return Some(field);
+        } else {
+            slf.iter_index = slf.x_size + 1;
+            slf.y_iter_pos = 1;
+            return None;
+        }
     }
 }
 
