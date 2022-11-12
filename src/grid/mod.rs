@@ -39,16 +39,16 @@ impl Grid {
         let max_iter: usize = (y_size * x_size) - (x_size + 1);
 
         Grid { 
-            y_size: y_size, 
-            x_size: x_size, 
-            grid: grid, 
-            boarder: boarder, 
-            field_count: field_count, 
-            mine_count: mine_count, 
-            last_grid_state: last_grid_state,
+            y_size, 
+            x_size, 
+            grid, 
+            boarder, 
+            field_count, 
+            mine_count, 
+            last_grid_state,
             iter_index: x_size + 1,
             y_iter_pos: 1,
-            max_iter: max_iter
+            max_iter
         }
     }
 
