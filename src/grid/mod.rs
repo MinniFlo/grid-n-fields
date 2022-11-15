@@ -1,13 +1,11 @@
-
+use crate::field::Field;
 use pyo3::prelude::*;
 use rand::prelude::*;
 use std::collections::HashSet;
-use crate::field::Field;
-
 
 #[pyclass]
 #[derive(Clone)]
-pub struct Grid{
+pub struct Grid {
     #[pyo3(get)]
     y_size: usize,
     #[pyo3(get)]
@@ -24,7 +22,7 @@ pub struct Grid{
     last_grid_state: Vec<Vec<Field>>,
     iter_index: usize,
     y_iter_pos: usize,
-    max_iter: usize
+    max_iter: usize,
 }
 
 #[pymethods]
@@ -38,17 +36,17 @@ impl Grid {
         let mine_count = ((field_count - 9) as f32 * percentage_of_mines) as usize;
         let max_iter: usize = (y_size * x_size) - (x_size + 1);
 
-        Grid { 
-            y_size, 
-            x_size, 
-            grid, 
-            boarder, 
-            field_count, 
-            mine_count, 
+        Grid {
+            y_size,
+            x_size,
+            grid,
+            boarder,
+            field_count,
+            mine_count,
             last_grid_state,
             iter_index: x_size + 1,
             y_iter_pos: 1,
-            max_iter
+            max_iter,
         }
     }
 
@@ -59,11 +57,19 @@ impl Grid {
 
     pub fn neighbors_of_coordinates(&self, coordinates: (usize, usize)) -> HashSet<(usize, usize)> {
         let (y, x) = coordinates;
-        let neighbors = 
-            vec![(y-1, x-1), (y-1, x), (y-1, x+1), (y, x-1), (y, x+1), (y+1, x-1), (y+1, x), (y+1, x+1)]
-            .into_iter()
-            .filter(|tup| !self.boarder.contains(tup))
-            .collect();
+        let neighbors = vec![
+            (y - 1, x - 1),
+            (y - 1, x),
+            (y - 1, x + 1),
+            (y, x - 1),
+            (y, x + 1),
+            (y + 1, x - 1),
+            (y + 1, x),
+            (y + 1, x + 1),
+        ]
+        .into_iter()
+        .filter(|tup| !self.boarder.contains(tup))
+        .collect();
 
         neighbors
     }
@@ -86,7 +92,7 @@ impl Grid {
     // reset game state
     pub fn reset_to_last_grid(&mut self) {
         self.grid.clone_from_slice(&self.last_grid_state);
-    } 
+    }
 
     pub fn is_relevant_closed_field(&mut self, coordinates: (usize, usize)) -> bool {
         let neighbors = self.neighbors_of_coordinates(coordinates);
@@ -115,8 +121,8 @@ impl Grid {
     }
 
     fn __next__(mut slf: PyRefMut<'_, Self>) -> Option<Field> {
-        if slf.iter_index < slf.max_iter{
-            if slf.iter_index % slf.x_size == slf.x_size -1{
+        if slf.iter_index < slf.max_iter {
+            if slf.iter_index % slf.x_size == slf.x_size - 1 {
                 slf.iter_index += 1;
                 slf.y_iter_pos = slf.iter_index / slf.x_size as usize;
                 slf.iter_index += 1;
@@ -124,16 +130,17 @@ impl Grid {
             let x = slf.iter_index % slf.x_size;
             slf.iter_index += 1;
             let field = slf.grid[slf.y_iter_pos][x];
-            return Some(field);
+            Some(field)
         } else {
             slf.iter_index = slf.x_size + 1;
             slf.y_iter_pos = 1;
-            return None;
+            None
         }
     }
 }
 
 impl Grid {
+    #[allow(clippy::needless_range_loop)]
     fn build_grid(y_size: usize, x_size: usize) -> Vec<Vec<Field>> {
         let mut grid: Vec<Vec<Field>> = vec![vec![]; y_size as usize];
         for y in 0..y_size {
@@ -170,20 +177,33 @@ impl Grid {
 
     pub fn get_free_stating_fields(coordinates: (usize, usize)) -> HashSet<(usize, usize)> {
         let (y, x) = coordinates;
-        HashSet::from([(y-1, x-1), (y-1, x), (y-1, x+1), (y, x-1), (y, x), (y, x+1), (y+1, x-1), (y+1, x), (y+1, x+1)])
+        HashSet::from([
+            (y - 1, x - 1),
+            (y - 1, x),
+            (y - 1, x + 1),
+            (y, x - 1),
+            (y, x),
+            (y, x + 1),
+            (y + 1, x - 1),
+            (y + 1, x),
+            (y + 1, x + 1),
+        ])
     }
 
     pub fn get_all_inner_field_coordinates(&self) -> Vec<(usize, usize)> {
         let mut all_coordinates = Vec::new();
-        for y in 1..self.y_size-1 {
-            for x in 1..self.x_size-1 {
+        for y in 1..self.y_size - 1 {
+            for x in 1..self.x_size - 1 {
                 all_coordinates.push((y, x))
             }
         }
         all_coordinates
     }
 
-    pub fn get_all_possible_mine_field_coordinates(&self, coordinates: (usize, usize)) -> Vec<(usize, usize)> {
+    pub fn get_all_possible_mine_field_coordinates(
+        &self,
+        coordinates: (usize, usize),
+    ) -> Vec<(usize, usize)> {
         let inner_coordinates = self.get_all_inner_field_coordinates();
         let start_fields = Self::get_free_stating_fields(coordinates);
         inner_coordinates
@@ -192,12 +212,15 @@ impl Grid {
             .collect()
     }
 
-    pub fn generate_mine_positions(&self, mut possible_mine_coordinates: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
+    pub fn generate_mine_positions(
+        &self,
+        mut possible_mine_coordinates: Vec<(usize, usize)>,
+    ) -> Vec<(usize, usize)> {
         let mut mine_positions = Vec::new();
         let possible_mine_count = possible_mine_coordinates.len();
         let mut rng = thread_rng();
         for n in 0..self.mine_count {
-            let random_index = rng.gen_range(0..possible_mine_count-n);
+            let random_index = rng.gen_range(0..possible_mine_count - n);
             let mine_coordinate = possible_mine_coordinates.remove(random_index);
             mine_positions.push(mine_coordinate);
         }
@@ -213,8 +236,8 @@ impl Grid {
     }
 
     pub fn set_numbers(&mut self) {
-        for y in 1..self.y_size-1 {
-            for x in 1..self.x_size-1 {
+        for y in 1..self.y_size - 1 {
+            for x in 1..self.x_size - 1 {
                 let coordinates = (y, x);
                 let number = self.count_mines(&coordinates);
                 let field = self.get_field_with_coordinates(&coordinates);

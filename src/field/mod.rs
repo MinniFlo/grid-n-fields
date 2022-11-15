@@ -1,11 +1,9 @@
-
-use pyo3::prelude::*;
 use pyo3::exceptions::PyValueError;
-
+use pyo3::prelude::*;
 
 #[pyclass]
 #[derive(Clone, Copy)]
-pub struct Field{
+pub struct Field {
     y_pos: usize,
     x_pos: usize,
     #[pyo3(get)]
@@ -21,14 +19,14 @@ pub struct Field{
     #[pyo3(get)]
     symbol: char,
     #[pyo3(get)]
-    color_id: u8
+    color_id: u8,
 }
 
 #[pymethods]
 impl Field {
     #[new]
     pub fn new(y_pos: usize, x_pos: usize) -> Self {
-        Field{
+        Field {
             y_pos: y_pos,
             x_pos: x_pos,
             number: 0,
@@ -37,7 +35,7 @@ impl Field {
             is_flag: false,
             is_relevant: false,
             symbol: '*',
-            color_id: 12
+            color_id: 12,
         }
     }
     #[getter]
@@ -61,7 +59,7 @@ impl Field {
                 let char_option = self.number.to_string().chars().nth(0);
                 match char_option {
                     Some(value) => self.symbol = value,
-                    None => return Err(PyValueError::new_err("number of Field is empty"))
+                    None => return Err(PyValueError::new_err("number of Field is empty")),
                 }
             }
         }
@@ -85,7 +83,7 @@ impl Field {
     #[setter]
     pub fn set_is_relevant(&mut self, is_relevant: bool) -> PyResult<()> {
         if self.is_flag {
-            return Ok(())
+            return Ok(());
         }
         self.is_relevant = is_relevant;
         if is_relevant && !self.is_open {
